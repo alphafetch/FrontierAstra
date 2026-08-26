@@ -1,0 +1,28 @@
+#ifndef CONSTANTS_HPP
+#define CONSTANTS_HPP
+
+// QOL definitions
+#define NEWLINE "\n"
+
+// Player-related definitions
+#define SPEED 1.5f
+#define FOV 65.0f
+#define NEAR_CLIP 0.1f
+#define FAR_CLIP 100.0f
+#define LOW_PITCH_CLAMP -85.0f
+#define HIGH_PITCH_CLAMP 85.0f
+#define SENSITIVITY 0.13f
+
+// Screen definitions
+#define SCR_WIDTH 800
+#define SCR_HEIGHT 600
+#define WIN_TITLE "Hello, cube!"
+#define SCR_CLEAR_COLOR 0.1f, 0.1f, 0.15f, 1.0f
+
+// Debug definitions
+#define LOG_LEN 512
+
+// Shader-related definitions
+#define VERTEX_COUNT 36
+
+#endif
