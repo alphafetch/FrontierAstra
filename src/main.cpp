@@ -160,7 +160,7 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     int width, height, channels;
-    unsigned char* data = stbi_load("assets/container.jpg", &width, &height, &channels, 0);
+    unsigned char* data = stbi_load("assets/img/container.jpg", &width, &height, &channels, 0);
 
     if (data) {
         GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
