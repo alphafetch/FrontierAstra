@@ -11,10 +11,12 @@
 #include "camera.hpp"
 #include "constants.hpp"
 #include "shader.hpp"
+#include "resource_manager.hpp"
+#include "utils.hpp"
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
-using std::array;
+using std::array, std::string;
 
 // Using declarations for glm
 using glm::vec3, glm::radians, glm::cos, 
@@ -39,40 +41,20 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    // Vertex vector
-    const char* vertexShaderSource = R"(
-    #version 330 core
-    layout (location = 0) in vec3 aPos;
-    layout (location = 1) in vec2 aTexCoord;
+    // Initialize the shader manager to compile and link shaders
+    ResourceManager<GLuint> shaderManager(
+        [](const std::string& key) -> GLuint {
+            auto shader_pair = splitKey(key);
+            string vertexShaderSource = readFile(shader_pair.first);
+            string fragShaderSource = readFile(shader_pair.second);
 
-    uniform mat4 model;
-    uniform mat4 view;
-    uniform mat4 projection;
+            GLuint vertShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource.c_str());
+            GLuint fragShader = compileShader(GL_FRAGMENT_SHADER, fragShaderSource.c_str());
 
-    out vec2 TexCoord;
-
-    void main() {
-        gl_Position = projection * view * model * vec4(aPos, 1.0);
-        TexCoord = aTexCoord;
-    }
-    )";
-
-    // Fragment vector
-    const char* fragShaderSource = R"(
-    #version 330 core
-    in vec2 TexCoord;
-    out vec4 FragColor;
-
-    uniform sampler2D texture1;
-
-    void main() {
-        FragColor = texture(texture1, TexCoord);
-    }
-    )";
-
-    // Initialize and compile shaders
-    GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
-    GLuint fragShader = compileShader(GL_FRAGMENT_SHADER, fragShaderSource);
+            GLuint shaderProgram = createShaderProgram(vertShader, fragShader);
+            return shaderProgram;
+        }
+    );
 
     // Create cube vertices
     float h = 0.5f;
@@ -144,8 +126,8 @@ int main() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // Create shader program
-    GLuint shaderProgram = createShaderProgram(vertexShader, fragShader);
+    string basicShaderKey = createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER);
+    GLuint basicShaderProgram = shaderManager.get(basicShaderKey);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -195,11 +177,11 @@ int main() {
     mat4 view = glm::lookAt(cam.position, cam.position + cam.front, cam.up);
     mat4 proj = glm::perspective(radians(FOV), (float)SCR_WIDTH / (float)SCR_HEIGHT, NEAR_CLIP, FAR_CLIP);
 
-    glUseProgram(shaderProgram);
+    glUseProgram(basicShaderProgram);
 
-    GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
-    GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
-    GLint projLoc = glGetUniformLocation(shaderProgram, "projection");
+    GLint modelLoc = glGetUniformLocation(basicShaderProgram, "model");
+    GLint viewLoc = glGetUniformLocation(basicShaderProgram, "view");
+    GLint projLoc = glGetUniformLocation(basicShaderProgram, "projection");
 
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -208,7 +190,7 @@ int main() {
     // Bind and uniform wiring
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(basicShaderProgram, "texture1"), 0);
 
     // Set last frame
     float lastFrame = 0.0f;
@@ -243,7 +225,7 @@ int main() {
         glClearColor(SCR_CLEAR_COLOR);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        glUseProgram(basicShaderProgram);
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, VERTEX_COUNT);
 
