@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image.h>
 #include <entt/entt.hpp>
+#include <fastnoise/FastNoiseLite.h>
 
 #include "render/camera.hpp"
 #include "render/shader.hpp"
@@ -22,6 +23,7 @@
 #include "utils/utils.hpp"
 
 #include "procgen/planet.hpp"
+#include "procgen/math.hpp"
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
@@ -82,14 +84,25 @@ int main() {
         }
     );
 
+    // Create the shader program via shaderManager
     string basicShaderKey = createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER);
     GLuint basicShaderProgram = shaderManager.get(basicShaderKey);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    // Set up the entity registry
     registry reg;
 
-    Mesh faceMesh = joinMesh(16);
+    // Set up the FastNoiseLite
+    FastNoiseLite planetNoise(getChildSeed(MASTER_SEED, 0));
+    planetNoise.SetNoiseType(GLOBAL_NOISE_TYPE);
+    planetNoise.SetFrequency(PLANET_FREQ);
+    planetNoise.SetFractalType(GLOBAL_FRACTAL_TYPE);
+    planetNoise.SetFractalOctaves(PLANET_OCTAVES);
+    planetNoise.SetFractalLacunarity(PLANET_LACUNARITY);
+    planetNoise.SetFractalGain(PLANET_FRACTAL_GAIN);
+
+    Mesh faceMesh = joinMesh(128, planetNoise, 75, 0.10f);
     entity face = reg.create();
     reg.emplace<Model>(face, faceMesh, textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
     reg.emplace<Transform>(face, ZERO_VEC3);

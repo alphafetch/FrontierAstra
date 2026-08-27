@@ -1,9 +1,10 @@
 #include "planet.hpp"
 
 #include "math.hpp"
+#include "../core/constants.hpp"
 
 // Generate a cube face
-MeshData generateCubeFace(int resolution) {
+MeshData generateCubeFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale) {
     MeshData data;
 
     for (int row = 0; row < resolution; row++) {
@@ -19,6 +20,15 @@ MeshData generateCubeFace(int resolution) {
 
             float u = col / ((float)resolution - 1);
             float v = row / ((float)resolution - 1);
+
+            // Apply noise
+            float xs = xw * noiseScale; 
+            float ys = yw * noiseScale; 
+            float zs = zw * noiseScale;
+            float height = heightScale * noise.GetNoise(xs, ys, zs);
+            xw *= PLANET_BASE_RADIUS + height;
+            yw *= PLANET_BASE_RADIUS + height;
+            zw *= PLANET_BASE_RADIUS + height;
 
             data.vertices.push_back(xw);
             data.vertices.push_back(yw);
@@ -49,8 +59,8 @@ MeshData generateCubeFace(int resolution) {
 }
 
 // Helper to join meshes with their data
-Mesh joinMesh(int res) {
-    MeshData data = generateCubeFace(res);
+Mesh joinMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
+    MeshData data = generateCubeFace(res, noise, noiseScale, heightScale);
     Mesh mesh = createMesh(data.vertices, data.indices);
     return mesh;
 }
