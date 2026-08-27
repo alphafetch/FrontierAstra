@@ -94,17 +94,41 @@ MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float 
     return data;
 }
 
-// Helper to join meshes with their data
-Mesh joinMeshSpheroidFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
-    MeshData data = generateSpheroidFace(res, noise, noiseScale, heightScale, faceIndex);
-    Mesh mesh = createMesh(data.vertices, data.indices);
-    return mesh;
-}
-
-array<Mesh, 6> createPlanetMeshGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
-    array<Mesh, 6> faces = {};
+// Helper to create an array of MeshData structs from the function above
+array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
+    array<MeshData, 6> faces = {};
     for (int i = 0; i < 6; i++) {
-        faces.at(i) = joinMeshSpheroidFace(res, noise, noiseScale, heightScale, i);
+        faces.at(i) = generateSpheroidFace(res, noise, noiseScale, heightScale, i);
     }
     return faces;
+}
+
+// ref: Mesh mesh = createMesh(data.vertices, data.indices);
+// Merge the data from the function above
+MeshData mergeSpheroidFaceData(array<MeshData, 6> dataArr) {
+    MeshData data;
+    for (int i = 0; i < 6; i++) {
+        data.vertices.insert(data.vertices.end(), dataArr[i].vertices.begin(), dataArr[i].vertices.end());
+    }
+
+    int vertOffset = 0;
+    MeshData current;
+    for (int i = 0; i < 6; i++) {
+        current = dataArr.at(i);
+        for (int j = 0; j < current.indices.size(); j++) {
+            data.indices.push_back(current.indices.at(j) + vertOffset);
+        }
+        vertOffset += dataArr.at(i).vertices.size() / 5;
+    }
+
+    return data;
+}
+
+// Link all these functions together
+Mesh createPlanet(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
+    array<MeshData, 6> faces = createPlanetMeshDataGroup(res, noise, noiseScale, heightScale);
+    MeshData merged = mergeSpheroidFaceData(faces);
+    Mesh mesh = createMesh(merged.vertices, merged.indices);
+    
+    return mesh;
 }

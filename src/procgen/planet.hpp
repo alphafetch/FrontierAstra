@@ -7,14 +7,18 @@
 #include <fastnoise/FastNoiseLite.h>
 
 #include "../render/mesh.hpp"
+#include "../core/entity.hpp"
 
-// Generate a cube face
+// Generate a spheroid face with noise
 MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex);
 
-// Helper to join spheroid planet face meshes with their data
-Mesh joinMeshSpheroidFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex);
+// Helper to create an array of MeshData structs from the function above
+std::array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
 
-// Helper to loop through the faces of a planet mesh group
-std::array<Mesh, 6> createPlanetMeshGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
+// Merge the data from the function above
+MeshData mergeSpheroidFaceData(std::array<MeshData, 6> data);
+
+// Link all these functions together
+Mesh createPlanet(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
 
 #endif
