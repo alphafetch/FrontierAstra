@@ -1,10 +1,6 @@
 #include "planet.hpp"
 
-#include <cmath>
-
 #include "math.hpp"
-
-using std::sqrt, std::pow;
 
 // Generate a cube face
 MeshData generateCubeFace(int resolution) {
