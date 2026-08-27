@@ -115,7 +115,7 @@ MeshData mergeSpheroidFaceData(array<MeshData, 6> dataArr) {
     MeshData current;
     for (int i = 0; i < 6; i++) {
         current = dataArr.at(i);
-        for (int j = 0; j < current.indices.size(); j++) {
+        for (int j = 0; j < static_cast<int>(current.indices.size()); j++) {
             data.indices.push_back(current.indices.at(j) + vertOffset);
         }
         vertOffset += dataArr.at(i).vertices.size() / 5;
