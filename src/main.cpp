@@ -69,7 +69,10 @@ int main() {
     ResourceManager<GLuint> textureManager(
         [](const std::string& key) -> GLuint {
             auto texture = generate2DTexture();
-            upload2DTexture(key);
+            int s = upload2DTexture(key);
+            if (s == 1) {
+                exit(EXIT_FAILURE);
+            }
 
             return texture;
         }
