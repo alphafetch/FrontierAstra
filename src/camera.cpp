@@ -48,3 +48,18 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 
     cam->right = normalize(cross(cam->front, cam->up));
 }
+
+// Scan for input across WASD
+void processWASD(GLFWwindow* window, Camera& cam, float frameTime) {
+    // WASD movement
+    vec3 moveDir(0.0f);
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) moveDir += cam.front;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) moveDir -= cam.front;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) moveDir += cam.right;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) moveDir -= cam.right;
+
+    if (moveDir != vec3(0.0f)) {
+        moveDir = normalize(moveDir);
+        cam.position += moveDir * SPEED * frameTime;
+    }
+}

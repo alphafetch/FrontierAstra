@@ -19,6 +19,9 @@
 #define WIN_TITLE "Hello, cube!"
 #define SCR_CLEAR_COLOR 0.1f, 0.1f, 0.15f, 1.0f
 
+// Time related definitions
+#define FIXED_TIME 1.0f / 60.0f
+
 // Debug definitions
 #define LOG_LEN 512
 

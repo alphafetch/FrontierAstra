@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image.h>
+#include <entt/entt.hpp>
 
 #include "camera.hpp"
 #include "constants.hpp"
@@ -15,6 +16,8 @@
 #include "utils.hpp"
 #include "texture.hpp"
 #include "mesh.hpp"
+#include "entity.hpp"
+#include "update.hpp"
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
@@ -23,7 +26,11 @@ using std::array, std::string;
 // Using declarations for glm
 using glm::vec3, glm::radians, glm::cos, 
       glm::sin, glm::normalize, glm::mat4,
-      glm::cross;
+      glm::cross, glm::lookAt, glm::value_ptr,
+      glm::perspective;
+
+// Using declarations for entt
+using entt::registry, entt::entity;
 
 int main() {
     // Initialize window
@@ -158,10 +165,14 @@ int main() {
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    GLuint texture = textureManager.get(CONTAINER_JPG_TEX);
+    registry reg;
+    entity cube = reg.create();
+    reg.emplace<Model>(cube, meshManager.get("cube"), textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
+    reg.emplace<Transform>(cube, vec3(0, 0, 0));
 
-    Mesh cube = meshManager.get("cube");
-    Mesh quad = meshManager.get("quad");
+    entity quad = reg.create();
+    reg.emplace<Model>(quad, meshManager.get("quad"), textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
+    reg.emplace<Transform>(quad, vec3(2, -0.5, 0));
 
     // Create camera
     Camera cam;
@@ -182,9 +193,8 @@ int main() {
     glfwSetCursorPosCallback(window, mouseCallback);
 
     // MVP space
-    mat4 model(1.0f);
-    mat4 view = glm::lookAt(cam.position, cam.position + cam.front, cam.up);
-    mat4 proj = glm::perspective(radians(FOV), (float)SCR_WIDTH / (float)SCR_HEIGHT, NEAR_CLIP, FAR_CLIP);
+    mat4 view = lookAt(cam.position, cam.position + cam.front, cam.up);
+    mat4 proj = perspective(radians(FOV), (float)SCR_WIDTH / (float)SCR_HEIGHT, NEAR_CLIP, FAR_CLIP);
 
     glUseProgram(basicShaderProgram);
 
@@ -192,51 +202,43 @@ int main() {
     GLint viewLoc = glGetUniformLocation(basicShaderProgram, "view");
     GLint projLoc = glGetUniformLocation(basicShaderProgram, "projection");
 
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-
-    // Bind and uniform wiring
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(basicShaderProgram, "texture1"), 0);
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(proj));
 
     // Set last frame
     float lastFrame = 0.0f;
+    float accumulator = 0.0f;
 
     // Main window update loop
     while(!glfwWindowShouldClose(window)) {
-        // Frame updates
+        // Frame updates and variables
         float currentFrame = (float)glfwGetTime();
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         // Get frame updates
         glfwPollEvents();
+        
+        // Get keyboard input for free-fly
+        processWASD(window, cam, deltaTime);
 
-        // WASD movement
-        vec3 moveDir(0.0f);
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) moveDir += cam.front;
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) moveDir -= cam.front;
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) moveDir += cam.right;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) moveDir -= cam.right;
-
-        if (moveDir != vec3(0.0f)) {
-            moveDir = normalize(moveDir);
-            cam.position += moveDir * SPEED * deltaTime;
+        // Process logic
+        accumulator += deltaTime;
+        while (accumulator >= FIXED_TIME) {
+            // game logic here
+            accumulator -= FIXED_TIME;
         }
 
         // Set camera direction based on current positions
-        view = glm::lookAt(cam.position, cam.position + cam.front, cam.up);
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        view = lookAt(cam.position, cam.position + cam.front, cam.up);
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
 
-        // Update the screen
+        // Clear from the stale previous frame
         glClearColor(SCR_CLEAR_COLOR);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(basicShaderProgram);
-        glBindVertexArray(cube.vao);
-        glDrawArrays(GL_TRIANGLES, 0, cube.vertexCount);
+        // Render to the screen
+        renderModels(reg, modelLoc);
 
         glfwSwapBuffers(window);
     }

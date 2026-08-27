@@ -35,4 +35,7 @@ struct Camera {
 // Callback for mouse movement
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 
+// Scan for input across WASD
+void processWASD(GLFWwindow* window, Camera& cam, float frameTime);
+
 #endif
