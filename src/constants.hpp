@@ -26,7 +26,11 @@
 #define VERTEX_COUNT 36
 
 // Filepath definitions
+// Shaders
 #define BASIC_VERT_SHADER "assets/shaders/basic.vert"
 #define BASIC_FRAG_SHADER "assets/shaders/basic.frag"
+
+// Textures
+#define CONTAINER_JPG_TEX "assets/img/container.jpg"
 
 #endif

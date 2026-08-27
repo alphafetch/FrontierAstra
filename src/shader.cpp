@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include <glad/gl.h>
-
 #include "constants.hpp"
 
 using std::cerr, std::endl;

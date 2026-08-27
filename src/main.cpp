@@ -13,6 +13,7 @@
 #include "shader.hpp"
 #include "resource_manager.hpp"
 #include "utils.hpp"
+#include "texture.hpp"
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
@@ -53,6 +54,16 @@ int main() {
 
             GLuint shaderProgram = createShaderProgram(vertShader, fragShader);
             return shaderProgram;
+        }
+    );
+
+    // Initialize the texture manager to load textures
+    ResourceManager<GLuint> textureManager(
+        [](const std::string& key) -> GLuint {
+            auto texture = generate2DTexture();
+            upload2DTexture(key);
+
+            return texture;
         }
     );
 
@@ -131,28 +142,7 @@ int main() {
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    // Texture setup
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height, channels;
-    unsigned char* data = stbi_load("assets/img/container.jpg", &width, &height, &channels, 0);
-
-    if (data) {
-        GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        cerr << "Failed to load texture" << endl;
-    }
-
-    stbi_image_free(data);
+    GLuint texture = textureManager.get(CONTAINER_JPG_TEX);
 
     // Create camera
     Camera cam;
