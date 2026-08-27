@@ -1,8 +1,9 @@
-#ifndef CONSTANTS_HPP
-#define CONSTANTS_HPP
+#ifndef CORE_CONSTANTS_HPP
+#define CORE_CONSTANTS_HPP
 
 // QOL definitions
 #define NEWLINE "\n"
+#define ZERO_VEC3 vec3(0, 0, 0)
 
 // Player-related definitions
 #define SPEED 1.5f

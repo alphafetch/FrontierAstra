@@ -1,5 +1,5 @@
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#ifndef RENDER_SHADER_HPP
+#define RENDER_SHADER_HPP
 
 #include <glad/gl.h>
 

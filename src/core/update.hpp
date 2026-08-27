@@ -1,5 +1,5 @@
-#ifndef UPDATE_HPP
-#define UPDATE_HPP
+#ifndef CORE_UPDATE_HPP
+#define CORE_UPDATE_HPP
 
 #include <entt/entt.hpp>
 #include <glad/gl.h>

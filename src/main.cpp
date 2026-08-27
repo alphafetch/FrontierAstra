@@ -21,6 +21,8 @@
 
 #include "utils/utils.hpp"
 
+#include "procgen/planet.hpp"
+
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
 using std::array, std::string;
@@ -80,104 +82,17 @@ int main() {
         }
     );
 
-    // Initialize the mesh manager to create vertex meshes
-    ResourceManager<Mesh> meshManager(
-        [](const std::string& key) -> Mesh {
-            if (key == "cube") {
-                float h = 0.5;
-                std::vector<float> vertices = {
-                    // Back face (Z = -h)
-                    -h, -h, -h,  0.0f, 0.0f,
-                    h, -h, -h,  1.0f, 0.0f,
-                    h,  h, -h,  1.0f, 1.0f,
-                    h,  h, -h,  1.0f, 1.0f,
-                    -h,  h, -h,  0.0f, 1.0f,
-                    -h, -h, -h,  0.0f, 0.0f,
-
-                    // Front face (Z = h)
-                    -h, -h,  h,  0.0f, 0.0f,
-                    h, -h,  h,  1.0f, 0.0f,
-                    h,  h,  h,  1.0f, 1.0f,
-                    h,  h,  h,  1.0f, 1.0f,
-                    -h,  h,  h,  0.0f, 1.0f,
-                    -h, -h,  h,  0.0f, 0.0f,
-
-                    // Left face (X = -h)
-                    -h,  h,  h,  1.0f, 0.0f,
-                    -h,  h, -h,  1.0f, 1.0f,
-                    -h, -h, -h,  0.0f, 1.0f,
-                    -h, -h, -h,  0.0f, 1.0f,
-                    -h, -h,  h,  0.0f, 0.0f,
-                    -h,  h,  h,  1.0f, 0.0f,
-
-                    // Right face (X = h)
-                    h,  h,  h,  1.0f, 0.0f,
-                    h,  h, -h,  1.0f, 1.0f,
-                    h, -h, -h,  0.0f, 1.0f,
-                    h, -h, -h,  0.0f, 1.0f,
-                    h, -h,  h,  0.0f, 0.0f,
-                    h,  h,  h,  1.0f, 0.0f,
-
-                    // Bottom face (Y = -h)
-                    -h, -h, -h,  0.0f, 1.0f,
-                    h, -h, -h,  1.0f, 1.0f,
-                    h, -h,  h,  1.0f, 0.0f,
-                    h, -h,  h,  1.0f, 0.0f,
-                    -h, -h,  h,  0.0f, 0.0f,
-                    -h, -h, -h,  0.0f, 1.0f,
-
-                    // Top face (Y = h)
-                    -h,  h, -h,  0.0f, 1.0f,
-                    h,  h, -h,  1.0f, 1.0f,
-                    h,  h,  h,  1.0f, 0.0f,
-                    h,  h,  h,  1.0f, 0.0f,
-                    -h,  h,  h,  0.0f, 0.0f,
-                    -h,  h, -h,  0.0f, 1.0f
-                };
-                auto meshVAO = createMeshVAO(vertices);
-
-                Mesh mesh;
-                mesh.vao = meshVAO;
-                mesh.vertexCount = 36;
-
-                return mesh;
-            } else if (key == "quad") {
-                float h = 0.5;
-                std::vector<float> vertices = {
-                    -h, 0.0f, -h, 0.0f, 0.0f,
-                    h, 0.0f, -h, 1.0f, 0.0f,
-                    h, 0.0f, h, 1.0f, 1.0f,
-                    h, 0.0f, h, 1.0f, 1.0f,
-                    -h, 0.0f, h, 0.0f, 1.0f,
-                    -h, 0.0f, -h, 0.0f, 0.0f
-                };
-                auto meshVAO = createMeshVAO(vertices);
-
-                Mesh mesh;
-                mesh.vao = meshVAO;
-                mesh.vertexCount = 6;
-
-                return mesh;
-            }
-
-            cerr << "Mesh not found: " << key << endl;
-            exit(EXIT_FAILURE);
-        }
-    );
-
     string basicShaderKey = createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER);
     GLuint basicShaderProgram = shaderManager.get(basicShaderKey);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     registry reg;
-    entity cube = reg.create();
-    reg.emplace<Model>(cube, meshManager.get("cube"), textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
-    reg.emplace<Transform>(cube, vec3(0, 0, 0));
 
-    entity quad = reg.create();
-    reg.emplace<Model>(quad, meshManager.get("quad"), textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
-    reg.emplace<Transform>(quad, vec3(2, -0.5, 0));
+    Mesh faceMesh = joinMesh(16);
+    entity face = reg.create();
+    reg.emplace<Model>(face, faceMesh, textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
+    reg.emplace<Transform>(face, ZERO_VEC3);
 
     // Create camera
     Camera cam;

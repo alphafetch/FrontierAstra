@@ -1,5 +1,5 @@
-#ifndef ENTITY_HPP
-#define ENTITY_HPP
+#ifndef CORE_ENTITY_HPP
+#define CORE_ENTITY_HPP
 
 #include <glad/gl.h>
 #include <glm/glm.hpp>

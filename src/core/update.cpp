@@ -28,6 +28,7 @@ void renderModels(registry& reg, GLint modelLoc) {
 
         // Draw the model
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(modelMatrix));
-        glDrawArrays(GL_TRIANGLES, 0, model.mesh.vertexCount);
+        if (model.mesh.indexCount > 0) { glDrawElements(GL_TRIANGLES, model.mesh.indexCount, GL_UNSIGNED_INT, 0); }
+        else { glDrawArrays(GL_TRIANGLES, 0, model.mesh.vertexCount); }
     });
 }

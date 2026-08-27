@@ -1,5 +1,5 @@
-#ifndef RESOURCE_MANAGER_HPP
-#define RESOURCE_MANAGER_HPP
+#ifndef RENDER_RESOURCE_MANAGER_HPP
+#define RENDER_RESOURCE_MANAGER_HPP
 
 #include <functional>
 #include <unordered_map>

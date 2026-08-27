@@ -1,5 +1,5 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef RENDER_CAMERA_HPP
+#define RENDER_CAMERA_HPP
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
