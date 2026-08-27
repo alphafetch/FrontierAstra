@@ -205,6 +205,8 @@ int main() {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(proj));
 
+    glUniform1i(glGetUniformLocation(basicShaderProgram, "texture1"), 0);
+
     // Set last frame
     float lastFrame = 0.0f;
     float accumulator = 0.0f;
