@@ -1,38 +1,74 @@
 #include "planet.hpp"
 
+#include <iostream>
+
+#include <glm/glm.hpp>
+
 #include "math.hpp"
 #include "../core/constants.hpp"
 
-// Generate a cube face
-MeshData generateCubeFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale) {
+// Using declarations for std
+using std::cerr, std::endl;
+using std::array;
+
+// Using declarations for glm
+using glm::vec3;
+
+// Generate a spheroid face with noise
+MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
     MeshData data;
+
+    array<array<vec3, 3>, 6> faceVectors = {{
+        // Normal      | Right         | Up
+        {vec3(1, 0, 0),  vec3(0, 0, -1),vec3(0, 1, 0)}, // +X - 0i
+        {vec3(-1, 0, 0), vec3(0, 0, 1), vec3(0, 1, 0)}, // -X - 1i
+        {vec3(0, 1, 0),  vec3(1, 0, 0), vec3(0, 0, -1)},// +Y - 2i
+        {vec3(0, -1, 0), vec3(1, 0, 0), vec3(0, 0, 1)}, // -Y - 3i
+        {vec3(0, 0, 1),  vec3(1, 0, 0), vec3(0, 1, 0)}, // +Z - 4i
+        {vec3(0, 0, -1), vec3(-1, 0, 0),vec3(0, 1, 0)}  // -Z - 5i
+    }};
+
+    if (faceIndex < 0 || faceIndex > 5) {
+        cerr << "Face index " << faceIndex << " not found." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    vec3 normal = faceVectors[faceIndex][0];
+    vec3 right = faceVectors[faceIndex][1];
+    vec3 up = faceVectors[faceIndex][2];
 
     for (int row = 0; row < resolution; row++) {
         for (int col = 0; col < resolution; col++) {
-            float x = (col / ((float)resolution - 1)) * 2 - 1;
-            float y = (row / ((float)resolution - 1)) * 2 - 1;
-            float z = 1.0f;
+            float colValue = (col / (static_cast<float>(resolution) - 1)) * 2 - 1;
+            float rowValue = (row / (static_cast<float>(resolution) - 1)) * 2 - 1;
+
+            vec3 pos = normal + (colValue * right) + (rowValue * up);
 
             // Calculate warped values
-            float xw = warpToSphere(y, z, x);
-            float yw = warpToSphere(x, z, y);
-            float zw = warpToSphere(x, y, z);
+            vec3 warpedPos(
+                warpToSphere(pos.y, pos.z, pos.x),
+                warpToSphere(pos.x, pos.z, pos.y),
+                warpToSphere(pos.x, pos.y, pos.z)
+            );
 
-            float u = col / ((float)resolution - 1);
-            float v = row / ((float)resolution - 1);
+            float u = col / (static_cast<float>(resolution) - 1);
+            float v = row / (static_cast<float>(resolution) - 1);
 
             // Apply noise
-            float xs = xw * noiseScale; 
-            float ys = yw * noiseScale; 
-            float zs = zw * noiseScale;
-            float height = heightScale * noise.GetNoise(xs, ys, zs);
-            xw *= PLANET_BASE_RADIUS + height;
-            yw *= PLANET_BASE_RADIUS + height;
-            zw *= PLANET_BASE_RADIUS + height;
+            vec3 scaledPos(
+                warpedPos.x * noiseScale,
+                warpedPos.y * noiseScale,
+                warpedPos.z * noiseScale
+            );
 
-            data.vertices.push_back(xw);
-            data.vertices.push_back(yw);
-            data.vertices.push_back(zw);
+            float height = heightScale * noise.GetNoise(scaledPos.x, scaledPos.y, scaledPos.z);
+            warpedPos.x *= PLANET_BASE_RADIUS + height;
+            warpedPos.y *= PLANET_BASE_RADIUS + height;
+            warpedPos.z *= PLANET_BASE_RADIUS + height;
+
+            data.vertices.push_back(warpedPos.x);
+            data.vertices.push_back(warpedPos.y);
+            data.vertices.push_back(warpedPos.z);
             data.vertices.push_back(u);
             data.vertices.push_back(v);
         }
@@ -59,8 +95,16 @@ MeshData generateCubeFace(int resolution, const FastNoiseLite& noise, float nois
 }
 
 // Helper to join meshes with their data
-Mesh joinMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
-    MeshData data = generateCubeFace(res, noise, noiseScale, heightScale);
+Mesh joinMeshSpheroidFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
+    MeshData data = generateSpheroidFace(res, noise, noiseScale, heightScale, faceIndex);
     Mesh mesh = createMesh(data.vertices, data.indices);
     return mesh;
+}
+
+array<Mesh, 6> createPlanetMeshGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
+    array<Mesh, 6> faces = {};
+    for (int i = 0; i < 6; i++) {
+        faces.at(i) = joinMeshSpheroidFace(res, noise, noiseScale, heightScale, i);
+    }
+    return faces;
 }

@@ -102,10 +102,13 @@ int main() {
     planetNoise.SetFractalLacunarity(PLANET_LACUNARITY);
     planetNoise.SetFractalGain(PLANET_FRACTAL_GAIN);
 
-    Mesh faceMesh = joinMesh(128, planetNoise, 75, 0.10f);
-    entity face = reg.create();
-    reg.emplace<Model>(face, faceMesh, textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
-    reg.emplace<Transform>(face, ZERO_VEC3);
+    array<Mesh, 6> faceMeshes = createPlanetMeshGroup(128, planetNoise, 75, 0.10f);
+    array<entity, 6> faceEntities = {};
+    for (int i = 0; i < 6; i++) {
+        faceEntities.at(i) = reg.create();
+        reg.emplace<Model>(faceEntities[i], faceMeshes[i], textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
+        reg.emplace<Transform>(faceEntities[i], ZERO_VEC3);
+    }
 
     // Create camera
     Camera cam;
