@@ -9,15 +9,17 @@
 #include <stb_image.h>
 #include <entt/entt.hpp>
 
-#include "camera.hpp"
-#include "constants.hpp"
-#include "shader.hpp"
-#include "resource_manager.hpp"
-#include "utils.hpp"
-#include "texture.hpp"
-#include "mesh.hpp"
-#include "entity.hpp"
-#include "update.hpp"
+#include "render/camera.hpp"
+#include "render/shader.hpp"
+#include "render/resource_manager.hpp"
+#include "render/texture.hpp"
+#include "render/mesh.hpp"
+
+#include "core/constants.hpp"
+#include "core/entity.hpp"
+#include "core/update.hpp"
+
+#include "utils/utils.hpp"
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;

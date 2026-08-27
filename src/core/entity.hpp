@@ -4,7 +4,7 @@
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 
-#include "mesh.hpp"
+#include "../render/mesh.hpp"
 
 struct Model {
     Mesh mesh;

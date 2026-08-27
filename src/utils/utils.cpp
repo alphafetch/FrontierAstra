@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "constants.hpp"
+#include "../core/constants.hpp"
 
 // Using declarations for std
 using std::string, std::ifstream, std::cerr, std::endl;

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "constants.hpp"
+#include "../core/constants.hpp"
 
 using std::cerr, std::endl;
 

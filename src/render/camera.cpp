@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "constants.hpp"
+#include "../core/constants.hpp"
 
 // Using declarations for std
 using std::clamp;
