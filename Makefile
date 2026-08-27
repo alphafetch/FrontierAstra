@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -I external/glad/include -I external/stb -Wall
+CXXFLAGS := -I external/glad/include -I external/stb -I external -Wall
 LDFLAGS := -lglfw3 -lopengl32 -lgdi32
 
 SRCS := $(wildcard src/*.cpp) external/glad/gl.c
