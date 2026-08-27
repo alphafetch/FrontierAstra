@@ -14,6 +14,7 @@
 #include "resource_manager.hpp"
 #include "utils.hpp"
 #include "texture.hpp"
+#include "mesh.hpp"
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
@@ -67,75 +68,90 @@ int main() {
         }
     );
 
-    // Create cube vertices
-    float h = 0.5f;
+    // Initialize the mesh manager to create vertex meshes
+    ResourceManager<Mesh> meshManager(
+        [](const std::string& key) -> Mesh {
+            if (key == "cube") {
+                float h = 0.5;
+                std::vector<float> vertices = {
+                    // Back face (Z = -h)
+                    -h, -h, -h,  0.0f, 0.0f,
+                    h, -h, -h,  1.0f, 0.0f,
+                    h,  h, -h,  1.0f, 1.0f,
+                    h,  h, -h,  1.0f, 1.0f,
+                    -h,  h, -h,  0.0f, 1.0f,
+                    -h, -h, -h,  0.0f, 0.0f,
 
-    array<float, 180> vertices = {
-        // Back face (Z = -h)          // UV
-        -h, -h, -h,  0.0f, 0.0f,
-         h, -h, -h,  1.0f, 0.0f,
-         h,  h, -h,  1.0f, 1.0f,
-         h,  h, -h,  1.0f, 1.0f,
-        -h,  h, -h,  0.0f, 1.0f,
-        -h, -h, -h,  0.0f, 0.0f,
+                    // Front face (Z = h)
+                    -h, -h,  h,  0.0f, 0.0f,
+                    h, -h,  h,  1.0f, 0.0f,
+                    h,  h,  h,  1.0f, 1.0f,
+                    h,  h,  h,  1.0f, 1.0f,
+                    -h,  h,  h,  0.0f, 1.0f,
+                    -h, -h,  h,  0.0f, 0.0f,
 
-        // Front face (Z = h)
-        -h, -h,  h,  0.0f, 0.0f,
-         h, -h,  h,  1.0f, 0.0f,
-         h,  h,  h,  1.0f, 1.0f,
-         h,  h,  h,  1.0f, 1.0f,
-        -h,  h,  h,  0.0f, 1.0f,
-        -h, -h,  h,  0.0f, 0.0f,
+                    // Left face (X = -h)
+                    -h,  h,  h,  1.0f, 0.0f,
+                    -h,  h, -h,  1.0f, 1.0f,
+                    -h, -h, -h,  0.0f, 1.0f,
+                    -h, -h, -h,  0.0f, 1.0f,
+                    -h, -h,  h,  0.0f, 0.0f,
+                    -h,  h,  h,  1.0f, 0.0f,
 
-        // Left face (X = -h)
-        -h,  h,  h,  1.0f, 0.0f,
-        -h,  h, -h,  1.0f, 1.0f,
-        -h, -h, -h,  0.0f, 1.0f,
-        -h, -h, -h,  0.0f, 1.0f,
-        -h, -h,  h,  0.0f, 0.0f,
-        -h,  h,  h,  1.0f, 0.0f,
+                    // Right face (X = h)
+                    h,  h,  h,  1.0f, 0.0f,
+                    h,  h, -h,  1.0f, 1.0f,
+                    h, -h, -h,  0.0f, 1.0f,
+                    h, -h, -h,  0.0f, 1.0f,
+                    h, -h,  h,  0.0f, 0.0f,
+                    h,  h,  h,  1.0f, 0.0f,
 
-        // Right face (X = h)
-         h,  h,  h,  1.0f, 0.0f,
-         h,  h, -h,  1.0f, 1.0f,
-         h, -h, -h,  0.0f, 1.0f,
-         h, -h, -h,  0.0f, 1.0f,
-         h, -h,  h,  0.0f, 0.0f,
-         h,  h,  h,  1.0f, 0.0f,
+                    // Bottom face (Y = -h)
+                    -h, -h, -h,  0.0f, 1.0f,
+                    h, -h, -h,  1.0f, 1.0f,
+                    h, -h,  h,  1.0f, 0.0f,
+                    h, -h,  h,  1.0f, 0.0f,
+                    -h, -h,  h,  0.0f, 0.0f,
+                    -h, -h, -h,  0.0f, 1.0f,
 
-        // Bottom face (Y = -h)
-        -h, -h, -h,  0.0f, 1.0f,
-         h, -h, -h,  1.0f, 1.0f,
-         h, -h,  h,  1.0f, 0.0f,
-         h, -h,  h,  1.0f, 0.0f,
-        -h, -h,  h,  0.0f, 0.0f,
-        -h, -h, -h,  0.0f, 1.0f,
+                    // Top face (Y = h)
+                    -h,  h, -h,  0.0f, 1.0f,
+                    h,  h, -h,  1.0f, 1.0f,
+                    h,  h,  h,  1.0f, 0.0f,
+                    h,  h,  h,  1.0f, 0.0f,
+                    -h,  h,  h,  0.0f, 0.0f,
+                    -h,  h, -h,  0.0f, 1.0f
+                };
+                auto meshVAO = createMeshVAO(vertices);
 
-        // Top face (Y = h)
-        -h,  h, -h,  0.0f, 1.0f,
-         h,  h, -h,  1.0f, 1.0f,
-         h,  h,  h,  1.0f, 0.0f,
-         h,  h,  h,  1.0f, 0.0f,
-        -h,  h,  h,  0.0f, 0.0f,
-        -h,  h, -h,  0.0f, 1.0f
-    };
+                Mesh mesh;
+                mesh.vao = meshVAO;
+                mesh.vertexCount = 36;
 
-    // Data for the GPU
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+                return mesh;
+            } else if (key == "quad") {
+                float h = 0.5;
+                std::vector<float> vertices = {
+                    -h, 0.0f, -h, 0.0f, 0.0f,
+                    h, 0.0f, -h, 1.0f, 0.0f,
+                    h, 0.0f, h, 1.0f, 1.0f,
+                    h, 0.0f, h, 1.0f, 1.0f,
+                    -h, 0.0f, h, 0.0f, 1.0f,
+                    -h, 0.0f, -h, 0.0f, 0.0f
+                };
+                auto meshVAO = createMeshVAO(vertices);
 
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+                Mesh mesh;
+                mesh.vao = meshVAO;
+                mesh.vertexCount = 6;
 
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+                return mesh;
+            }
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+            cerr << "Mesh not found: " << key << endl;
+            exit(EXIT_FAILURE);
+        }
+    );
 
     string basicShaderKey = createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER);
     GLuint basicShaderProgram = shaderManager.get(basicShaderKey);
@@ -143,6 +159,9 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     GLuint texture = textureManager.get(CONTAINER_JPG_TEX);
+
+    Mesh cube = meshManager.get("cube");
+    Mesh quad = meshManager.get("quad");
 
     // Create camera
     Camera cam;
@@ -216,8 +235,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(basicShaderProgram);
-        glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(cube.vao);
+        glDrawArrays(GL_TRIANGLES, 0, cube.vertexCount);
 
         glfwSwapBuffers(window);
     }
