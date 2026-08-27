@@ -217,7 +217,7 @@ int main() {
 
         glUseProgram(basicShaderProgram);
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, VERTEX_COUNT);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
     }

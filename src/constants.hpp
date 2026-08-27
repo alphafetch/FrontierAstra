@@ -22,9 +22,6 @@
 // Debug definitions
 #define LOG_LEN 512
 
-// Shader-related definitions
-#define VERTEX_COUNT 36
-
 // Filepath definitions
 // Shaders
 #define BASIC_VERT_SHADER "assets/shaders/basic.vert"
