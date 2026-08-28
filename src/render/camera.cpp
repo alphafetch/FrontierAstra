@@ -37,8 +37,8 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
     cam->setPitch(cam->pitch - deltaY * SENSITIVITY);
 
     // Clamp the pitch
-    float new_pitch = std::clamp(cam->pitch, LOW_PITCH_CLAMP, HIGH_PITCH_CLAMP);
-    cam->setPitch(new_pitch);
+    float newPitch = std::clamp(cam->pitch, LOW_PITCH_CLAMP, HIGH_PITCH_CLAMP);
+    cam->setPitch(newPitch);
 
     // Recompute front and right vectors
     cam->front.x = cos(cam->yawRad) * cos(cam->pitchRad);
