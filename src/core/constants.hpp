@@ -17,7 +17,7 @@
 // Screen definitions
 #define SCR_WIDTH 800
 #define SCR_HEIGHT 600
-#define WIN_TITLE "Space Expo Game"
+#define WIN_TITLE "Pax Astra"
 #define SCR_CLEAR_COLOR 0.1f, 0.1f, 0.15f, 1.0f
 
 // Game-related definitions

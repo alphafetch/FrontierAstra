@@ -104,7 +104,7 @@ int main() {
 
     // Create a planet
     Mesh planetMesh = createPlanetMesh(512, planetNoise, 75, 0.10f);
-    entity planet = createPlanet(
+    createPlanet(
         planetMesh, reg, textureManager, shaderManager, 
         CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER), 
         ZERO_VEC3
