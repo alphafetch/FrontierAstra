@@ -39,8 +39,8 @@ using entt::registry, entt::entity;
 
 int main() {
     // Initialize window
-    int s = glfwInit();
-    if (s == 0) {
+    int windowInitSuccess = glfwInit();
+    if (windowInitSuccess == 0) {
         cerr << "glfwInit failed" << endl;
         exit(EXIT_FAILURE);
     }
@@ -74,8 +74,8 @@ int main() {
     ResourceManager<GLuint> textureManager(
         [](const std::string& key) -> GLuint {
             auto texture = generate2DTexture();
-            int s = upload2DTexture(key);
-            if (s == 1) {
+            int textureUploadSuccess = upload2DTexture(key);
+            if (textureUploadSuccess == 1) {
                 exit(EXIT_FAILURE);
             }
 
