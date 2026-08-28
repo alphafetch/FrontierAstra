@@ -21,7 +21,7 @@
 #define SCR_CLEAR_COLOR 0.1f, 0.1f, 0.15f, 1.0f
 
 // Game-related definitions
-#define FIXED_TIME 1.0f / 60.0f
+#define FIXED_TIME (1.0f / 60.0f)
 #define MASTER_SEED 9801
 // Noise
 // - GLOBAL
