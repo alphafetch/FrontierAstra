@@ -1,5 +1,4 @@
 #include <iostream>
-#include <array>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -27,7 +26,7 @@
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
-using std::array, std::string;
+using std::string;
 
 // Using declarations for glm
 using glm::vec3, glm::radians, glm::cos, 
