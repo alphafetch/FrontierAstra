@@ -14,7 +14,7 @@
 #include "../render/resource_manager.hpp"
 
 // Generate a spheroid face with noise
-MeshData generatePlanetFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex);
+MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex);
 
 // Helper to create an array of MeshData structs from the function above
 std::array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
