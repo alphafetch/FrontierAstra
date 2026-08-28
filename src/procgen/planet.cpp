@@ -17,7 +17,7 @@ using glm::vec3;
 using entt::entity, entt::registry;
 
 // Generate a spheroid face with noise
-MeshData generatePlanetFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
+MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
     MeshData data;
 
     static const array<array<vec3, 3>, 6> faceVectors = {{
@@ -39,10 +39,10 @@ MeshData generatePlanetFace(int resolution, const FastNoiseLite& noise, float no
     vec3 right = faceVectors[faceIndex][1];
     vec3 up = faceVectors[faceIndex][2];
 
-    for (int row = 0; row < resolution; row++) {
-        for (int col = 0; col < resolution; col++) {
-            float colValue = (col / (static_cast<float>(resolution) - 1)) * 2 - 1;
-            float rowValue = (row / (static_cast<float>(resolution) - 1)) * 2 - 1;
+    for (int row = 0; row < res; row++) {
+        for (int col = 0; col < res; col++) {
+            float colValue = (col / (static_cast<float>(res) - 1)) * 2 - 1;
+            float rowValue = (row / (static_cast<float>(res) - 1)) * 2 - 1;
 
             vec3 pos = normal + (colValue * right) + (rowValue * up);
 
@@ -53,8 +53,8 @@ MeshData generatePlanetFace(int resolution, const FastNoiseLite& noise, float no
                 warpToSphere(pos.x, pos.y, pos.z)
             );
 
-            float u = col / (static_cast<float>(resolution) - 1);
-            float v = row / (static_cast<float>(resolution) - 1);
+            float u = col / (static_cast<float>(res) - 1);
+            float v = row / (static_cast<float>(res) - 1);
 
             // Apply noise
             vec3 scaledPos(
@@ -76,12 +76,12 @@ MeshData generatePlanetFace(int resolution, const FastNoiseLite& noise, float no
         }
     }
 
-    for (int row = 0; row < resolution - 1; row++) {
-        for (int col = 0; col < resolution - 1; col++) {
-            int topLeft = row * resolution + col;
-            int topRight = row * resolution + (col + 1);
-            int bottomLeft = (row + 1) * resolution + col;
-            int bottomRight = (row + 1) * resolution + (col + 1);
+    for (int row = 0; row < res - 1; row++) {
+        for (int col = 0; col < res - 1; col++) {
+            int topLeft = row * res + col;
+            int topRight = row * res + (col + 1);
+            int bottomLeft = (row + 1) * res + col;
+            int bottomRight = (row + 1) * res + (col + 1);
 
             data.indices.push_back(topLeft);
             data.indices.push_back(bottomLeft);
