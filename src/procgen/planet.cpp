@@ -91,15 +91,6 @@ MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScal
     return data;
 }
 
-// Helper to create an array of MeshData structs from the function above
-std::vector<MeshData> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
-    vector<MeshData> faces = {};
-    for (int i = 0; i < 6; i++) {
-        faces.push_back(generatePlanetFace(res, noise, noiseScale, heightScale, i, vec3(0, 0, 0), PLANET_FACE_FULL_SIZE));
-    }
-    return faces;
-}
-
 // ref: Mesh mesh = createMesh(data.vertices, data.indices);
 // Merge the data from the function above
 MeshData mergePlanetFaceData(const std::vector<MeshData>& dataVect) {
@@ -118,15 +109,6 @@ MeshData mergePlanetFaceData(const std::vector<MeshData>& dataVect) {
     }
 
     return data;
-}
-
-// Link all these functions together
-Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
-    vector<MeshData> faces = createPlanetMeshDataGroup(res, noise, noiseScale, heightScale);
-    MeshData merged = mergePlanetFaceData(faces);
-    Mesh mesh = createMesh(merged.vertices, merged.indices);
-    
-    return mesh;
 }
 
 // Ease of use entity creator for planets

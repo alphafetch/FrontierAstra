@@ -18,6 +18,7 @@ Mesh createMesh(const std::vector<float>& vertices, const std::vector<unsigned i
         mesh.indexCount = static_cast<int>(indices.size());
     } else {
         mesh.indexCount = 0;
+        ebo = 0;
     }
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -28,5 +29,16 @@ Mesh createMesh(const std::vector<float>& vertices, const std::vector<unsigned i
 
     mesh.vertexCount = vertices.size() / 5;
     mesh.vao = vao;
+    mesh.vbo = vbo;
+    mesh.ebo = ebo;
     return mesh;
+}
+
+// Destroy meshes
+void destroyMesh(const Mesh& mesh) {
+    glDeleteVertexArrays(1, &mesh.vao);
+    glDeleteBuffers(1, &mesh.vbo);
+    if (mesh.ebo != 0) {
+        glDeleteBuffers(1, &mesh.ebo);
+    }
 }

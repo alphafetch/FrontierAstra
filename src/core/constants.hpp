@@ -26,7 +26,9 @@
 #define MASTER_SEED 9801 // Master seed
 #define GLOBAL_NOISE_TYPE FastNoiseLite::NoiseType_OpenSimplex2 // Noise types
 #define GLOBAL_FRACTAL_TYPE FastNoiseLite::FractalType_FBm
+#define GLOBAL_LOD_REFRESH_DIST 5.0f
 // - PLANET
+#define PLANET_COUNT 2 // Planet count (temporary dial)
 #define PLANET_FREQ 0.02f // Frequency for planet generation
 #define PLANET_OCTAVES 2 // Octaves, lower, bigger details
 #define PLANET_LACUNARITY 1.8f // Noise - lacunarity

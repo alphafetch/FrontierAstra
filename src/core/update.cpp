@@ -5,12 +5,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "entity.hpp"
+#include "constants.hpp"
+#include "../procgen/quadtree.hpp"
+
+// Using declarations for std
+using std::vector;
 
 // Using declarations for entt
 using entt::registry, entt::entity;
 
 // Using declarations for glm
-using glm::translate, glm::mat4, glm::value_ptr;
+using glm::translate, glm::mat4, glm::value_ptr,
+      glm::vec3;
 
 // Render models onto the screen
 void renderModels(registry& reg, GLint modelLoc) {
@@ -31,4 +37,21 @@ void renderModels(registry& reg, GLint modelLoc) {
         if (model.mesh.indexCount > 0) { glDrawElements(GL_TRIANGLES, model.mesh.indexCount, GL_UNSIGNED_INT, 0); }
         else { glDrawArrays(GL_TRIANGLES, 0, model.mesh.vertexCount); }
     });
+}
+
+// Game logic
+void gameLogic(Camera& cam, registry& reg, vector<PlanetInstance>& planets, 
+               const FastNoiseLite& planetNoise, float distFactor, int maxDepth, int leafRes) {
+    bool movementThresholdReached = checkCameraMovement(cam, GLOBAL_LOD_REFRESH_DIST);
+    if (movementThresholdReached) {
+        for (const auto& planet : planets) {
+            Model& model = reg.get<Model>(planet.entity);
+            Mesh oldMesh = model.mesh;
+
+            Mesh newMesh = generateLODPlanetMesh(cam, distFactor, maxDepth, planetNoise, planet.noiseScale, planet.heightScale, leafRes);
+            model.mesh = newMesh;
+
+            destroyMesh(oldMesh);
+        }
+    }
 }

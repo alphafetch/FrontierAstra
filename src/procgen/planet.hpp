@@ -11,17 +11,20 @@
 #include "../render/mesh.hpp"
 #include "../render/resource_manager.hpp"
 
+struct PlanetInstance {
+    entt::entity entity;
+    float noiseScale;
+    float heightScale;
+
+    PlanetInstance(entt::entity inst, float noiseScale, float heightScale)
+        : entity(inst), noiseScale(noiseScale), heightScale(heightScale) {}
+};
+
 // Generate a spheroid face with noise
 MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex, glm::vec3 center, float size);
 
-// Helper to create an array of MeshData structs from the function above
-std::vector<MeshData> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
-
 // Merge the data from the function above
 MeshData mergePlanetFaceData(const std::vector<MeshData>& dataVect);
-
-// Link all these functions together to create a unified mesh
-Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
 
 // Link all creation functions together
 entt::entity createPlanet(Mesh mesh, entt::registry& reg, ResourceManager<GLuint>& textureManager, ResourceManager<GLuint>& shaderManager, const std::string& texturePath, const std::string& shaderKey, glm::vec3 position);

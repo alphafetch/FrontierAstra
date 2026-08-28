@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstdlib>
+#include <vector>
+#include <array>
+#include <random>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -27,7 +30,7 @@
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
-using std::string;
+using std::string, std::vector, std::array;
 
 // Using declarations for glm
 using glm::vec3, glm::radians, glm::cos, 
@@ -39,6 +42,17 @@ using glm::vec3, glm::radians, glm::cos,
 using entt::registry, entt::entity;
 
 int main() {
+    // Random initializations
+    std::mt19937 rng(MASTER_SEED);
+    std::uniform_int_distribution<int> noiseScaleRange(
+        PLANET_NOISE_SCALE_MIN,
+        PLANET_NOISE_SCALE_MAX
+    );
+    std::uniform_real_distribution<float>  heightScaleRange(
+        PLANET_HEIGHT_SCALE_MIN,
+        PLANET_HEIGHT_SCALE_MAX
+    );
+
     // Initialize window
     int windowInitSuccess = glfwInit();
     if (windowInitSuccess == 0) {
@@ -104,6 +118,9 @@ int main() {
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    // Planet instances
+    vector<PlanetInstance> planets;
+
     // Set up the entity registry
     registry reg;
 
@@ -117,33 +134,34 @@ int main() {
     planetNoise.SetFractalGain(PLANET_FRACTAL_GAIN);
 
     // Create a planet
-    createPlanet(
-        generateLODPlanetMesh(
-            cam, 
-            PLANET_SUBDIVIDE_DIST_FACTOR, 
-            PLANET_MAX_SUB_DEPTH,
-            planetNoise,
-            75, 0.10f,
-            PLANET_LEAF_RES
-        ),
-        reg, textureManager, shaderManager, 
-        CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER), 
-        ZERO_VEC3
-    );
-
-    createPlanet(
-        generateLODPlanetMesh(
-            cam,
-            PLANET_SUBDIVIDE_DIST_FACTOR,
-            PLANET_MAX_SUB_DEPTH,
-            planetNoise,
-            125, 0.05f,
-            PLANET_LEAF_RES
-        ),
-        reg, textureManager, shaderManager,
-        CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER),
-        vec3(2, 0, 0)
-    );
+    float tempNoiseScale, tempHeightScale;
+    array<vec3, PLANET_COUNT> positions = {
+        ZERO_VEC3,
+        vec3(3, 0, 0)
+    };
+    
+    for (int i = 0; i < PLANET_COUNT; i++) {
+        tempNoiseScale = noiseScaleRange(rng);
+        tempHeightScale = heightScaleRange(rng);
+        planets.push_back(
+            PlanetInstance(
+                createPlanet(
+                    generateLODPlanetMesh(
+                        cam, 
+                        PLANET_SUBDIVIDE_DIST_FACTOR, 
+                        PLANET_MAX_SUB_DEPTH,
+                        planetNoise,
+                        tempNoiseScale, tempHeightScale,
+                        PLANET_LEAF_RES
+                    ),
+                    reg, textureManager, shaderManager, 
+                    CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER), 
+                    positions.at(i)
+                ),
+                tempNoiseScale, tempHeightScale
+            )
+        );
+    }
 
     // Setup mouse
     glfwSetWindowUserPointer(window, &cam);
@@ -164,7 +182,7 @@ int main() {
 
     glUniform1i(glGetUniformLocation(basicShaderProgram, "texture1"), 0);
 
-    // Set last frame
+    // Set last frame & other misc. vars
     float lastFrame = 0.0f;
     float accumulator = 0.0f;
 
@@ -184,7 +202,13 @@ int main() {
         // Process logic
         accumulator += deltaTime;
         while (accumulator >= FIXED_TIME) {
-            // game logic here
+            gameLogic(
+                cam, reg, planets, planetNoise,
+                PLANET_SUBDIVIDE_DIST_FACTOR,
+                PLANET_MAX_SUB_DEPTH,
+                PLANET_LEAF_RES
+            );
+            
             accumulator -= FIXED_TIME;
         }
 

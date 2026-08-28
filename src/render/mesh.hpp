@@ -7,6 +7,8 @@
 
 struct Mesh {
     GLuint vao;
+    GLuint vbo;
+    GLuint ebo;
     int indexCount;
     int vertexCount;
 };
@@ -18,5 +20,8 @@ struct MeshData {
 
 // Create the mesh vao, vbo, and ebo
 Mesh createMesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices = {});
+
+// Destroy meshes
+void destroyMesh(const Mesh& mesh);
 
 #endif
