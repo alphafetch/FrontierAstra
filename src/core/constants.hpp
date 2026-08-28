@@ -3,7 +3,7 @@
 
 // QOL definitions
 #define NEWLINE "\n"
-#define ZERO_VEC3 vec3(0, 0, 0)
+#define ZERO_VEC3 glm::vec3(0, 0, 0)
 
 // Player-related definitions
 #define SPEED 1.5f
