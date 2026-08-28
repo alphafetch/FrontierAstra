@@ -26,6 +26,6 @@ MeshData mergeSpheroidFaceData(std::array<MeshData, 6> data);
 Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
 
 // Link all creation functions together
-entt::entity createPlanet(Mesh mesh, entt::registry& reg, ResourceManager<GLuint> texManager, ResourceManager<GLuint> shaderManager, std::string texturePath, std::string shaderKey, glm::vec3 position);
+entt::entity createPlanet(Mesh mesh, entt::registry& reg, ResourceManager<GLuint>& texManager, ResourceManager<GLuint>& shaderManager, std::string texturePath, std::string shaderKey, glm::vec3 position);
 
 #endif
