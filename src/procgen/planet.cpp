@@ -6,6 +6,7 @@
 #include "math.hpp"
 #include "common.hpp"
 #include "../core/constants.hpp"
+#include "../core/entity.hpp"
 
 // Using declarations for std
 using std::cerr, std::endl;
