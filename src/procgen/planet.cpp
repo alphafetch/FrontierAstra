@@ -20,7 +20,7 @@ using entt::entity, entt::registry;
 MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
     MeshData data;
 
-    array<array<vec3, 3>, 6> faceVectors = {{
+    static const array<array<vec3, 3>, 6> faceVectors = {{
         // Normal      | Right         | Up
         {vec3(1, 0, 0),  vec3(0, 0, -1),vec3(0, 1, 0)}, // +X - 0i
         {vec3(-1, 0, 0), vec3(0, 0, 1), vec3(0, 1, 0)}, // -X - 1i
