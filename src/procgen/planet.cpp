@@ -107,16 +107,15 @@ array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise
 
 // ref: Mesh mesh = createMesh(data.vertices, data.indices);
 // Merge the data from the function above
-MeshData mergePlanetFaceData(array<MeshData, 6>& dataArr) {
+MeshData mergePlanetFaceData(const array<MeshData, 6>& dataArr) {
     MeshData data;
     for (int i = 0; i < 6; i++) {
         data.vertices.insert(data.vertices.end(), dataArr[i].vertices.begin(), dataArr[i].vertices.end());
     }
 
     int vertOffset = 0;
-    MeshData current;
     for (int i = 0; i < 6; i++) {
-        current = dataArr.at(i);
+        const MeshData& current = dataArr.at(i);
         for (size_t j = 0; j < current.indices.size(); j++) {
             data.indices.push_back(current.indices.at(j) + vertOffset);
         }
