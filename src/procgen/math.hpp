@@ -5,6 +5,6 @@
 float warpToSphere(float a, float b, float target);
 
 // Get a child seed from the master seed
-int getChildSeed(const int master, int id);
+int getChildSeed(const int master, const int id);
 
 #endif
