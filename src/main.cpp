@@ -102,11 +102,18 @@ int main() {
     planetNoise.SetFractalGain(PLANET_FRACTAL_GAIN);
 
     // Create a planet
-    Mesh planetMesh = createPlanetMesh(512, planetNoise, 75, 0.10f);
     createPlanet(
-        planetMesh, reg, textureManager, shaderManager, 
+        createPlanetMesh(512, planetNoise, 75, 0.10f),
+        reg, textureManager, shaderManager, 
         CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER), 
         ZERO_VEC3
+    );
+
+    createPlanet(
+        createPlanetMesh(512, planetNoise, 125, 0.05f),
+        reg, textureManager, shaderManager,
+        CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER),
+        vec3(2, 0, 0)
     );
 
     // Create camera
