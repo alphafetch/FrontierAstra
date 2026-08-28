@@ -103,10 +103,12 @@ int main() {
     planetNoise.SetFractalGain(PLANET_FRACTAL_GAIN);
 
     // Create a planet
-    Mesh planetMesh = createPlanet(512, planetNoise, 75, 0.10f);
-    entity planet = reg.create();
-    reg.emplace<Model>(planet, planetMesh, textureManager.get(CONTAINER_JPG_TEX), shaderManager.get(createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER)));
-    reg.emplace<Transform>(planet, ZERO_VEC3);
+    Mesh planetMesh = createPlanetMesh(512, planetNoise, 75, 0.10f);
+    entity planet = createPlanet(
+        planetMesh, reg, textureManager, shaderManager, 
+        CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER), 
+        ZERO_VEC3
+    );
 
     // Create camera
     Camera cam;

@@ -2,17 +2,19 @@
 
 #include <iostream>
 
-#include <glm/glm.hpp>
-
 #include "math.hpp"
 #include "../core/constants.hpp"
+#include "../utils/utils.hpp"
 
 // Using declarations for std
 using std::cerr, std::endl;
-using std::array;
+using std::array, std::string;
 
 // Using declarations for glm
 using glm::vec3;
+
+// Using declarations for entt
+using entt::entity, entt::registry;
 
 // Generate a spheroid face with noise
 MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
@@ -115,7 +117,7 @@ MeshData mergeSpheroidFaceData(array<MeshData, 6> dataArr) {
     MeshData current;
     for (int i = 0; i < 6; i++) {
         current = dataArr.at(i);
-        for (int j = 0; j < static_cast<int>(current.indices.size()); j++) {
+        for (size_t j = 0; j < current.indices.size(); j++) {
             data.indices.push_back(current.indices.at(j) + vertOffset);
         }
         vertOffset += dataArr.at(i).vertices.size() / 5;
@@ -125,10 +127,19 @@ MeshData mergeSpheroidFaceData(array<MeshData, 6> dataArr) {
 }
 
 // Link all these functions together
-Mesh createPlanet(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
+Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
     array<MeshData, 6> faces = createPlanetMeshDataGroup(res, noise, noiseScale, heightScale);
     MeshData merged = mergeSpheroidFaceData(faces);
     Mesh mesh = createMesh(merged.vertices, merged.indices);
     
     return mesh;
+}
+
+// Ease of use entity creator for planets
+entity createPlanet(Mesh mesh, registry& reg, ResourceManager<GLuint> texManager, ResourceManager<GLuint> shaderManager, string texturePath, string shaderKey, vec3 position) {
+    entity planet = reg.create();
+    reg.emplace<Model>(planet, mesh, texManager.get(texturePath), shaderManager.get(shaderKey));
+    reg.emplace<Transform>(planet, position);
+
+    return planet;
 }
