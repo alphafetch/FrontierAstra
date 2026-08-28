@@ -107,7 +107,7 @@ array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise
 
 // ref: Mesh mesh = createMesh(data.vertices, data.indices);
 // Merge the data from the function above
-MeshData mergeSpheroidFaceData(array<MeshData, 6> dataArr) {
+MeshData mergeSpheroidFaceData(array<MeshData, 6>& dataArr) {
     MeshData data;
     for (int i = 0; i < 6; i++) {
         data.vertices.insert(data.vertices.end(), dataArr[i].vertices.begin(), dataArr[i].vertices.end());
