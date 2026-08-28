@@ -7,7 +7,7 @@
 // Read a file from a provided path
 std::string readFile(const std::string& path);
 
-// Get the two file paths in a shader combonation string
+// Get the two file paths in a shader combination string
 std::pair<std::string, std::string> splitKey(const std::string& key);
 
 // Create the key for the function above

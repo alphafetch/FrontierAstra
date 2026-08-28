@@ -23,7 +23,7 @@ string readFile(const string& path) {
     return buffer.str();
 }
 
-// Get the two file paths in a shader combonation string
+// Get the two file paths in a shader combination string
 pair<string, string> splitKey(const string& key) {
     size_t index = key.find("|");
     if (index == std::string::npos) {
