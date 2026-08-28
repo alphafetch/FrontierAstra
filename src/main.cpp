@@ -23,6 +23,7 @@
 
 #include "procgen/planet.hpp"
 #include "procgen/math.hpp"
+#include "procgen/quadtree.hpp"
 
 // Using declarations for std
 using std::cerr, std::exit, std::endl;
@@ -54,6 +55,20 @@ int main() {
     gladLoadGL((GLADloadfunc) glfwGetProcAddress);
 
     glEnable(GL_DEPTH_TEST);
+
+    // Create camera
+    Camera cam;
+    cam.position = vec3(0, 0, 3);
+    cam.setYaw(-90.0f); 
+    cam.setPitch(0.0f);
+    cam.up = vec3(0, 1, 0);
+
+    cam.front.x = cos(cam.yawRad) * cos(cam.pitchRad);
+    cam.front.y = sin(cam.pitchRad);
+    cam.front.z = sin(cam.yawRad) * cos(cam.pitchRad);
+
+    cam.front = normalize(cam.front);
+    cam.right = normalize(cross(cam.front, cam.up));
 
     // Initialize the shader manager to compile and link shaders
     ResourceManager<GLuint> shaderManager(
@@ -103,32 +118,32 @@ int main() {
 
     // Create a planet
     createPlanet(
-        createPlanetMesh(512, planetNoise, 75, 0.10f),
+        generateLODPlanetMesh(
+            cam, 
+            PLANET_SUBDIVIDE_DIST_FACTOR, 
+            PLANET_MAX_SUB_DEPTH,
+            planetNoise,
+            75, 0.10f,
+            PLANET_LEAF_RES
+        ),
         reg, textureManager, shaderManager, 
         CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER), 
         ZERO_VEC3
     );
 
     createPlanet(
-        createPlanetMesh(512, planetNoise, 125, 0.05f),
+        generateLODPlanetMesh(
+            cam,
+            PLANET_SUBDIVIDE_DIST_FACTOR,
+            PLANET_MAX_SUB_DEPTH,
+            planetNoise,
+            125, 0.05f,
+            PLANET_LEAF_RES
+        ),
         reg, textureManager, shaderManager,
         CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER),
         vec3(2, 0, 0)
     );
-
-    // Create camera
-    Camera cam;
-    cam.position = vec3(0, 0, 3);
-    cam.setYaw(-90.0f); 
-    cam.setPitch(0.0f);
-    cam.up = vec3(0, 1, 0);
-
-    cam.front.x = cos(cam.yawRad) * cos(cam.pitchRad);
-    cam.front.y = sin(cam.pitchRad);
-    cam.front.z = sin(cam.yawRad) * cos(cam.pitchRad);
-
-    cam.front = normalize(cam.front);
-    cam.right = normalize(cross(cam.front, cam.up));
 
     // Setup mouse
     glfwSetWindowUserPointer(window, &cam);

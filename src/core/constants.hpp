@@ -37,8 +37,9 @@
 #define PLANET_HEIGHT_SCALE_MIN 0.05f // Min for planet height factor
 #define PLANET_HEIGHT_SCALE_MAX 0.15f // Max for planet height factor
 #define PLANET_FACE_FULL_SIZE 2.0f // Do not change, base value for planet face
-#define PLANET_SUBDIVIDE_DIST_FACTOR 15 // Tune for farther subdivision distance
+#define PLANET_SUBDIVIDE_DIST_FACTOR 1.75 // Tune for farther subdivision distance
 #define PLANET_MAX_SUB_DEPTH 9 // 512 Resolution
+#define PLANET_LEAF_RES 128 // Individual resolution for leaves
 
 // Debug definitions
 #define LOG_LEN 512 // Length of logs for shader failures, etc.
