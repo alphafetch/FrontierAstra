@@ -12,7 +12,7 @@ float warpToSphere(float a, float b, float target) {
 }
 
 // Get a child seed from the master seed
-int getChildSeed(const int master, int id) {
+int getChildSeed(const int master, const int id) {
     std::mt19937 rng(master ^ (id * 0x9E3779B9));
     std::uniform_int_distribution<int> dist(INT_MIN, INT_MAX);
     return dist(rng);
