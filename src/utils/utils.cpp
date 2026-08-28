@@ -39,5 +39,5 @@ pair<string, string> splitKey(const string& key) {
 
 // Create the key for the function above
 string createKey(const string& vertPath, const string& fragPath) {
-    return vertPath + (string)"|" + fragPath;
+    return vertPath + "|" + fragPath;
 }
