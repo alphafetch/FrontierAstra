@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "math.hpp"
+#include "common.hpp"
 #include "../core/constants.hpp"
 #include "../utils/utils.hpp"
 
@@ -16,19 +17,11 @@ using glm::vec3;
 // Using declarations for entt
 using entt::entity, entt::registry;
 
-// Generate a spheroid face with noise
-MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
-    MeshData data;
+using utilarrs::faceVectors;
 
-    static const array<array<vec3, 3>, 6> faceVectors = {{
-        // Normal      | Right         | Up
-        {vec3(1, 0, 0),  vec3(0, 0, -1),vec3(0, 1, 0)}, // +X - 0i
-        {vec3(-1, 0, 0), vec3(0, 0, 1), vec3(0, 1, 0)}, // -X - 1i
-        {vec3(0, 1, 0),  vec3(1, 0, 0), vec3(0, 0, -1)},// +Y - 2i
-        {vec3(0, -1, 0), vec3(1, 0, 0), vec3(0, 0, 1)}, // -Y - 3i
-        {vec3(0, 0, 1),  vec3(1, 0, 0), vec3(0, 1, 0)}, // +Z - 4i
-        {vec3(0, 0, -1), vec3(-1, 0, 0),vec3(0, 1, 0)}  // -Z - 5i
-    }};
+// Generate a spheroid face with noise
+MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex, vec3 center, float size) {
+    MeshData data;
 
     if (faceIndex < 0 || faceIndex > 5) {
         cerr << "Face index " << faceIndex << " not found." << endl;
@@ -41,8 +34,8 @@ MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScal
 
     for (int row = 0; row < res; row++) {
         for (int col = 0; col < res; col++) {
-            float colValue = (col / (static_cast<float>(res) - 1)) * 2 - 1;
-            float rowValue = (row / (static_cast<float>(res) - 1)) * 2 - 1;
+            float colValue = center.x + ((col / (static_cast<float>(res) - 1)) * 2 - 1) * (size / 2);
+            float rowValue = center.y + ((row / (static_cast<float>(res) - 1)) * 2 - 1) * (size / 2);
 
             vec3 pos = normal + (colValue * right) + (rowValue * up);
 
@@ -100,7 +93,7 @@ MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScal
 array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
     array<MeshData, 6> faces = {};
     for (int i = 0; i < 6; i++) {
-        faces.at(i) = generatePlanetFace(res, noise, noiseScale, heightScale, i);
+        faces.at(i) = generatePlanetFace(res, noise, noiseScale, heightScale, i, vec3(0, 0, 0), PLANET_FACE_FULL_SIZE);
     }
     return faces;
 }
