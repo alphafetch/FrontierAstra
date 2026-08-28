@@ -6,6 +6,6 @@
 #include <glad/gl.h>
 
 GLuint generate2DTexture();
-int upload2DTexture(std::string texture_path);
+int upload2DTexture(const std::string& texture_path);
 
 #endif

@@ -11,6 +11,6 @@ std::string readFile(const std::string& path);
 std::pair<std::string, std::string> splitKey(const std::string& key);
 
 // Create the key for the function above
-std::string createKey(std::string vertPath, std::string fragPath);
+std::string createKey(const std::string& vertPath, const std::string& fragPath);
 
 #endif

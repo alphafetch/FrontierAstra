@@ -21,7 +21,7 @@ GLuint generate2DTexture() {
     return texture;
 }
 
-int upload2DTexture(string texture_path) {
+int upload2DTexture(const string& texture_path) {
     int width, height, channels;
     unsigned char* data = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
     

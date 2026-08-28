@@ -136,7 +136,7 @@ Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, flo
 }
 
 // Ease of use entity creator for planets
-entity createPlanet(Mesh mesh, registry& reg, ResourceManager<GLuint>& textureManager, ResourceManager<GLuint>& shaderManager, string texturePath, string shaderKey, vec3 position) {
+entity createPlanet(Mesh mesh, registry& reg, ResourceManager<GLuint>& textureManager, ResourceManager<GLuint>& shaderManager, const string& texturePath, const string& shaderKey, vec3 position) {
     entity planet = reg.create();
     reg.emplace<Model>(planet, mesh, textureManager.get(texturePath), shaderManager.get(shaderKey));
     reg.emplace<Transform>(planet, position);
