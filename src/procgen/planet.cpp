@@ -17,7 +17,7 @@ using glm::vec3;
 using entt::entity, entt::registry;
 
 // Generate a spheroid face with noise
-MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
+MeshData generatePlanetFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex) {
     MeshData data;
 
     static const array<array<vec3, 3>, 6> faceVectors = {{
@@ -100,14 +100,14 @@ MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float 
 array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
     array<MeshData, 6> faces = {};
     for (int i = 0; i < 6; i++) {
-        faces.at(i) = generateSpheroidFace(res, noise, noiseScale, heightScale, i);
+        faces.at(i) = generatePlanetFace(res, noise, noiseScale, heightScale, i);
     }
     return faces;
 }
 
 // ref: Mesh mesh = createMesh(data.vertices, data.indices);
 // Merge the data from the function above
-MeshData mergeSpheroidFaceData(array<MeshData, 6>& dataArr) {
+MeshData mergePlanetFaceData(array<MeshData, 6>& dataArr) {
     MeshData data;
     for (int i = 0; i < 6; i++) {
         data.vertices.insert(data.vertices.end(), dataArr[i].vertices.begin(), dataArr[i].vertices.end());
@@ -129,7 +129,7 @@ MeshData mergeSpheroidFaceData(array<MeshData, 6>& dataArr) {
 // Link all these functions together
 Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
     array<MeshData, 6> faces = createPlanetMeshDataGroup(res, noise, noiseScale, heightScale);
-    MeshData merged = mergeSpheroidFaceData(faces);
+    MeshData merged = mergePlanetFaceData(faces);
     Mesh mesh = createMesh(merged.vertices, merged.indices);
     
     return mesh;

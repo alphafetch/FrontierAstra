@@ -14,13 +14,13 @@
 #include "../render/resource_manager.hpp"
 
 // Generate a spheroid face with noise
-MeshData generateSpheroidFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex);
+MeshData generatePlanetFace(int resolution, const FastNoiseLite& noise, float noiseScale, float heightScale, int faceIndex);
 
 // Helper to create an array of MeshData structs from the function above
 std::array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
 
 // Merge the data from the function above
-MeshData mergeSpheroidFaceData(std::array<MeshData, 6>& data);
+MeshData mergePlanetFaceData(std::array<MeshData, 6>& data);
 
 // Link all these functions together to create a unified mesh
 Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
