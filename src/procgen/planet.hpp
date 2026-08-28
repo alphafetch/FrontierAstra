@@ -20,7 +20,7 @@ MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScal
 std::array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
 
 // Merge the data from the function above
-MeshData mergePlanetFaceData(std::array<MeshData, 6>& data);
+MeshData mergePlanetFaceData(const std::array<MeshData, 6>& data);
 
 // Link all these functions together to create a unified mesh
 Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale);
