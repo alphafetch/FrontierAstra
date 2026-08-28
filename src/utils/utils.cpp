@@ -3,8 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
-#include "../core/constants.hpp"
+#include <cstdlib>
 
 // Using declarations for std
 using std::string, std::ifstream, std::cerr, std::endl;

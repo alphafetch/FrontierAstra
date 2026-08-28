@@ -1,11 +1,11 @@
 #include <iostream>
+#include <cstdlib>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <stb_image.h>
 #include <entt/entt.hpp>
 #include <fastnoise/FastNoiseLite.h>
 

@@ -1,11 +1,11 @@
 #include "planet.hpp"
 
 #include <iostream>
+#include <cstdlib>
 
 #include "math.hpp"
 #include "common.hpp"
 #include "../core/constants.hpp"
-#include "../utils/utils.hpp"
 
 // Using declarations for std
 using std::cerr, std::endl;

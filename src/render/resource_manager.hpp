@@ -4,7 +4,6 @@
 #include <functional>
 #include <unordered_map>
 #include <string>
-#include <iostream>
 
 // ResourceManager class to cache resource files
 template<typename T>

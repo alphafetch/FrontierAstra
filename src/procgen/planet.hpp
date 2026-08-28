@@ -1,7 +1,6 @@
 #ifndef PROCGEN_PLANET_HPP
 #define PROCGEN_PLANET_HPP
 
-#include <vector>
 #include <array>
 #include <string>
 
@@ -10,7 +9,6 @@
 #include <glm/glm.hpp>
 
 #include "../render/mesh.hpp"
-#include "../core/entity.hpp"
 #include "../render/resource_manager.hpp"
 
 // Generate a spheroid face with noise

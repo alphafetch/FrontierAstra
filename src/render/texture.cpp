@@ -3,8 +3,6 @@
 #include <iostream>
 #include <stb_image.h>
 
-#include "../core/constants.hpp"
-
 using std::cerr, std::endl;
 using std::string;
 
