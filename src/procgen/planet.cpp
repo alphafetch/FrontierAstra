@@ -11,6 +11,7 @@
 // Using declarations for std
 using std::cerr, std::endl;
 using std::array, std::string;
+using std::vector;
 
 // Using declarations for glm
 using glm::vec3;
@@ -91,29 +92,29 @@ MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScal
 }
 
 // Helper to create an array of MeshData structs from the function above
-array<MeshData, 6> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
-    array<MeshData, 6> faces = {};
+std::vector<MeshData> createPlanetMeshDataGroup(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
+    vector<MeshData> faces = {};
     for (int i = 0; i < 6; i++) {
-        faces.at(i) = generatePlanetFace(res, noise, noiseScale, heightScale, i, vec3(0, 0, 0), PLANET_FACE_FULL_SIZE);
+        faces.push_back(generatePlanetFace(res, noise, noiseScale, heightScale, i, vec3(0, 0, 0), PLANET_FACE_FULL_SIZE));
     }
     return faces;
 }
 
 // ref: Mesh mesh = createMesh(data.vertices, data.indices);
 // Merge the data from the function above
-MeshData mergePlanetFaceData(const array<MeshData, 6>& dataArr) {
+MeshData mergePlanetFaceData(const std::vector<MeshData>& dataVect) {
     MeshData data;
-    for (int i = 0; i < 6; i++) {
-        data.vertices.insert(data.vertices.end(), dataArr[i].vertices.begin(), dataArr[i].vertices.end());
+    for (size_t i = 0; i < dataVect.size(); i++) {
+        data.vertices.insert(data.vertices.end(), dataVect.at(i).vertices.begin(), dataVect.at(i).vertices.end());
     }
 
     int vertOffset = 0;
-    for (int i = 0; i < 6; i++) {
-        const MeshData& current = dataArr.at(i);
+    for (size_t i = 0; i < dataVect.size(); i++) {
+        const MeshData& current = dataVect.at(i);
         for (size_t j = 0; j < current.indices.size(); j++) {
             data.indices.push_back(current.indices.at(j) + vertOffset);
         }
-        vertOffset += dataArr.at(i).vertices.size() / 5;
+        vertOffset += dataVect.at(i).vertices.size() / 5;
     }
 
     return data;
@@ -121,7 +122,7 @@ MeshData mergePlanetFaceData(const array<MeshData, 6>& dataArr) {
 
 // Link all these functions together
 Mesh createPlanetMesh(int res, const FastNoiseLite& noise, float noiseScale, float heightScale) {
-    array<MeshData, 6> faces = createPlanetMeshDataGroup(res, noise, noiseScale, heightScale);
+    vector<MeshData> faces = createPlanetMeshDataGroup(res, noise, noiseScale, heightScale);
     MeshData merged = mergePlanetFaceData(faces);
     Mesh mesh = createMesh(merged.vertices, merged.indices);
     
