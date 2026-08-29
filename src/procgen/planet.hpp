@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <future>
 
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
@@ -15,6 +16,8 @@ struct PlanetInstance {
     entt::entity entity;
     float noiseScale;
     float heightScale;
+
+    std::future<MeshData> pendingData;
 
     PlanetInstance(entt::entity inst, float noiseScale, float heightScale)
         : entity(inst), noiseScale(noiseScale), heightScale(heightScale) {}

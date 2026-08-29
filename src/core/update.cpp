@@ -1,5 +1,7 @@
 #include "update.hpp"
 
+#include <future>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -9,7 +11,7 @@
 #include "../procgen/quadtree.hpp"
 
 // Using declarations for std
-using std::vector;
+using std::vector, std::future_status, std::chrono::seconds;
 
 // Using declarations for entt
 using entt::registry, entt::entity;
@@ -43,15 +45,22 @@ void renderModels(registry& reg, GLint modelLoc) {
 void gameLogic(Camera& cam, registry& reg, vector<PlanetInstance>& planets, 
                const FastNoiseLite& planetNoise, float distFactor, int maxDepth, int leafRes) {
     bool movementThresholdReached = checkCameraMovement(cam, GLOBAL_LOD_REFRESH_DIST);
-    if (movementThresholdReached) {
-        for (const auto& planet : planets) {
-            Model& model = reg.get<Model>(planet.entity);
-            Mesh oldMesh = model.mesh;
+    for (auto& planet : planets) {
+        if (planet.pendingData.valid() == true) {
+            future_status status = planet.pendingData.wait_for(std::chrono::seconds(0));
+            if (status == future_status::ready) {
+                Model& model = reg.get<Model>(planet.entity);
+                Mesh oldMesh = model.mesh;
 
-            Mesh newMesh = generateLODPlanetMesh(cam, distFactor, maxDepth, planetNoise, planet.noiseScale, planet.heightScale, leafRes);
-            model.mesh = newMesh;
+                MeshData data = planet.pendingData.get();
+                Mesh newMesh = createMesh(data.vertices, data.indices);
+                model.mesh = newMesh;
 
-            destroyMesh(oldMesh);
+                destroyMesh(oldMesh);
+            }
+        } else if (movementThresholdReached) {
+            planet.pendingData = std::async(std::launch::async, generateLODPlanetMeshData, cam, 
+                                            distFactor, maxDepth, planetNoise, planet.noiseScale, planet.heightScale, leafRes);
         }
     }
 }

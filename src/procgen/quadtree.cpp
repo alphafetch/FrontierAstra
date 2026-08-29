@@ -68,7 +68,7 @@ void QuadNode::collectLeaves(std::vector<QuadNode*>& outLeaves) {
     }
 }
 
-Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes) {
+MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes) {
     vector<unique_ptr<QuadNode>> roots;
     for (int i = 0; i < 6; i++) {
         roots.push_back(make_unique<QuadNode>(
@@ -93,6 +93,15 @@ Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const Fas
     }
 
     MeshData data = mergePlanetFaceData(faceData);
+
+    return data;
+}
+
+Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes) {
+    MeshData data = generateLODPlanetMeshData(
+        cam, distFactor, maxDepth, noise, noiseScale, heightScale, leafRes
+    );
+
     Mesh mesh = createMesh(data.vertices, data.indices);
 
     return mesh;

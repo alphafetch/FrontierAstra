@@ -27,6 +27,9 @@ struct QuadNode {
     void subdivide();
 };
 
+// CPU side mesh generation
+MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes);
+
 // Generate the mesh with QuadNodes
 Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes);
 
