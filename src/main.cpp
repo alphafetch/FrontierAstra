@@ -148,11 +148,11 @@ int main() {
                 createPlanet(
                     generateLODPlanetMesh(
                         cam, 
-                        PLANET_SUBDIVIDE_DIST_FACTOR, 
-                        PLANET_MAX_SUB_DEPTH,
+                        PLANET_QUADNODE_DISTANCE_FACTOR, 
+                        PLANET_QUADNODE_MAX_DEPTH,
                         planetNoise,
                         tempNoiseScale, tempHeightScale,
-                        PLANET_LEAF_RES,
+                        PLANET_QUADNODE_LEAF_RESOLUTION,
                         positions.at(i)
                     ),
                     reg, textureManager, shaderManager, 
@@ -205,9 +205,9 @@ int main() {
         while (accumulator >= FIXED_TIME) {
             gameLogic(
                 cam, reg, planets, planetNoise,
-                PLANET_SUBDIVIDE_DIST_FACTOR,
-                PLANET_MAX_SUB_DEPTH,
-                PLANET_LEAF_RES
+                PLANET_QUADNODE_DISTANCE_FACTOR,
+                PLANET_QUADNODE_MAX_DEPTH,
+                PLANET_QUADNODE_LEAF_RESOLUTION
             );
             
             accumulator -= FIXED_TIME;
