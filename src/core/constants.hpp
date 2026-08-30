@@ -18,7 +18,7 @@
 // Screen definitions
 #define SCR_WIDTH 800 // Screen size
 #define SCR_HEIGHT 600
-#define WIN_TITLE "Frontier Astra" // Title
+#define SCR_TITLE "Frontier Astra" // Title
 #define SCR_CLEAR_COLOR 0.1f, 0.1f, 0.15f, 1.0f // BG color
 
 // Game-related definitions
