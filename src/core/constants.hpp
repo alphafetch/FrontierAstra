@@ -4,9 +4,10 @@
 // QOL definitions
 #define NEWLINE "\n" // Newline character
 #define ZERO_VEC3 glm::vec3(0, 0, 0) // Zeroed Vector3
+#define ZERO_DVEC3 glm::dvec3(0, 0, 0) // Zeroed Double Vector3
 
 // Player-related definitions
-#define SPEED 1.5f // Player speed
+#define SPEED 10.0f // Player speed
 #define FOV 65.0f // Player FOV
 #define NEAR_CLIP 0.1f // Near mesh clip
 #define FAR_CLIP 100.0f // Far mesh clip
@@ -26,7 +27,7 @@
 #define MASTER_SEED 9801 // Master seed
 #define GLOBAL_NOISE_TYPE FastNoiseLite::NoiseType_OpenSimplex2 // Noise types
 #define GLOBAL_FRACTAL_TYPE FastNoiseLite::FractalType_FBm
-#define GLOBAL_LOD_REFRESH_DIST 5.0f
+#define GLOBAL_LOD_REFRESH_DIST 10.0f // Distance to trigger an LOD refresh - higher = better performance
 // - PLANET
 #define PLANET_COUNT 2 // Planet count (temporary dial)
 #define PLANET_FREQ 0.02f // Frequency for planet generation

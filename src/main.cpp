@@ -36,7 +36,7 @@ using std::string, std::vector, std::array;
 using glm::vec3, glm::radians, glm::cos, 
       glm::sin, glm::normalize, glm::mat4,
       glm::cross, glm::lookAt, glm::value_ptr,
-      glm::perspective;
+      glm::perspective, glm::dvec3;
 
 // Using declarations for entt
 using entt::registry, entt::entity;
@@ -72,7 +72,7 @@ int main() {
 
     // Create camera
     Camera cam;
-    cam.position = vec3(0, 0, 3);
+    cam.truePosition = dvec3(0, 0, 3);
     cam.setYaw(-90.0f); 
     cam.setPitch(0.0f);
     cam.up = vec3(0, 1, 0);
@@ -121,10 +121,10 @@ int main() {
     // Planet instances
     vector<PlanetInstance> planets;
 
-    // Set up the entity registry
+    // Set up the entity registry to hold each individual entity
     registry reg;
 
-    // Set up the FastNoiseLite
+    // Set up the FastNoiseLite for noise generation
     FastNoiseLite planetNoise(getChildSeed(MASTER_SEED, 0));
     planetNoise.SetNoiseType(GLOBAL_NOISE_TYPE);
     planetNoise.SetFrequency(PLANET_FREQ);
@@ -133,11 +133,11 @@ int main() {
     planetNoise.SetFractalLacunarity(PLANET_LACUNARITY);
     planetNoise.SetFractalGain(PLANET_FRACTAL_GAIN);
 
-    // Create a planet
+    // Create planets, and store them in `reg`
     float tempNoiseScale, tempHeightScale;
-    array<vec3, PLANET_COUNT> positions = {
-        ZERO_VEC3,
-        vec3(3, 0, 0)
+    array<dvec3, PLANET_COUNT> positions = {
+        ZERO_DVEC3,
+        dvec3(3, 0, 0)
     };
     
     for (int i = 0; i < PLANET_COUNT; i++) {
@@ -152,7 +152,8 @@ int main() {
                         PLANET_MAX_SUB_DEPTH,
                         planetNoise,
                         tempNoiseScale, tempHeightScale,
-                        PLANET_LEAF_RES
+                        PLANET_LEAF_RES,
+                        positions.at(i)
                     ),
                     reg, textureManager, shaderManager, 
                     CONTAINER_JPG_TEX, createKey(BASIC_VERT_SHADER, BASIC_FRAG_SHADER), 
@@ -168,7 +169,7 @@ int main() {
     glfwSetCursorPosCallback(window, mouseCallback);
 
     // MVP space
-    mat4 view = lookAt(cam.position, cam.position + cam.front, cam.up);
+    mat4 view = lookAt(vec3(0.0f), cam.front, cam.up);
     mat4 proj = perspective(radians(FOV), (float)SCR_WIDTH / (float)SCR_HEIGHT, NEAR_CLIP, FAR_CLIP);
 
     glUseProgram(basicShaderProgram);
@@ -213,7 +214,7 @@ int main() {
         }
 
         // Set camera direction based on current positions
-        view = lookAt(cam.position, cam.position + cam.front, cam.up);
+        view = lookAt(vec3(0.0f), cam.front, cam.up);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
 
         // Clear from the stale previous frame
@@ -221,7 +222,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Render to the screen
-        renderModels(reg, modelLoc);
+        renderModels(reg, modelLoc, cam);
 
         glfwSwapBuffers(window);
     }

@@ -13,7 +13,7 @@ using std::clamp;
 // Using declarations for glm
 using glm::vec3, glm::radians, glm::cos, 
       glm::sin, glm::normalize, glm::cross,
-      glm::distance;
+      glm::distance, glm::dvec3;
 
 // Callback for mouse movement
 void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
@@ -61,15 +61,15 @@ void processWASD(GLFWwindow* window, Camera& cam, float frameTime) {
 
     if (moveDir != vec3(0.0f)) {
         moveDir = normalize(moveDir);
-        cam.position += moveDir * SPEED * frameTime;
+        cam.truePosition += glm::dvec3(moveDir * SPEED * frameTime);
     }
 }
 
 // Check for movement
 bool checkCameraMovement(Camera& cam, float distThreshold) {
-    static vec3 previousPos = cam.position;
-    if (distance(previousPos, cam.position) >= distThreshold) {
-        previousPos = cam.position;
+    static dvec3 previousPos = cam.truePosition;
+    if (distance(previousPos, cam.truePosition) >= distThreshold) {
+        previousPos = cam.truePosition;
         return true;
     } else {
         return false;

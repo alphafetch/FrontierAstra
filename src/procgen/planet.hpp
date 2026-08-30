@@ -30,6 +30,6 @@ MeshData generatePlanetFace(int res, const FastNoiseLite& noise, float noiseScal
 MeshData mergePlanetFaceData(const std::vector<MeshData>& dataVect);
 
 // Link all creation functions together
-entt::entity createPlanet(Mesh mesh, entt::registry& reg, ResourceManager<GLuint>& textureManager, ResourceManager<GLuint>& shaderManager, const std::string& texturePath, const std::string& shaderKey, glm::vec3 position);
+entt::entity createPlanet(Mesh mesh, entt::registry& reg, ResourceManager<GLuint>& textureManager, ResourceManager<GLuint>& shaderManager, const std::string& texturePath, const std::string& shaderKey, glm::dvec3 position);
 
 #endif

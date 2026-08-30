@@ -10,7 +10,7 @@
 #include "../procgen/planet.hpp"
 
 // Render models onto the screen
-void renderModels(entt::registry& reg, GLint modelLoc);
+void renderModels(entt::registry& reg, GLint modelLoc, Camera& cam);
 
 // Game logic
 void gameLogic(Camera& cam, entt::registry& reg, std::vector<PlanetInstance>& planets, 

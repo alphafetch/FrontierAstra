@@ -28,9 +28,9 @@ struct QuadNode {
 };
 
 // CPU side mesh generation
-MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes);
+MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes, glm::dvec3 planetTruePosition);
 
 // Generate the mesh with QuadNodes
-Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes);
+Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes, glm::dvec3 planetTruePosition);
 
 #endif

@@ -9,7 +9,7 @@
 #include "../core/constants.hpp"
 #include "planet.hpp"
 
-using glm::vec3;
+using glm::vec3, glm::dvec3;
 
 using std::make_unique, std::unique_ptr;
 using std::vector;
@@ -68,7 +68,7 @@ void QuadNode::collectLeaves(std::vector<QuadNode*>& outLeaves) {
     }
 }
 
-MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes) {
+MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes, dvec3 planetTruePosition) {
     vector<unique_ptr<QuadNode>> roots;
     for (int i = 0; i < 6; i++) {
         roots.push_back(make_unique<QuadNode>(
@@ -78,7 +78,8 @@ MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, c
     }
 
     for (const auto& i : roots) {
-        i->subdivideCheck(cam.position, distFactor, maxDepth);
+        dvec3 offset = cam.truePosition - planetTruePosition;
+        i->subdivideCheck(vec3(offset), distFactor, maxDepth);
     }
 
     vector<QuadNode*> leaves;
@@ -97,9 +98,9 @@ MeshData generateLODPlanetMeshData(Camera cam, float distFactor, int maxDepth, c
     return data;
 }
 
-Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes) {
+Mesh generateLODPlanetMesh(Camera cam, float distFactor, int maxDepth, const FastNoiseLite& noise, float noiseScale, float heightScale, int leafRes, dvec3 planetTruePosition) {
     MeshData data = generateLODPlanetMeshData(
-        cam, distFactor, maxDepth, noise, noiseScale, heightScale, leafRes
+        cam, distFactor, maxDepth, noise, noiseScale, heightScale, leafRes, planetTruePosition
     );
 
     Mesh mesh = createMesh(data.vertices, data.indices);

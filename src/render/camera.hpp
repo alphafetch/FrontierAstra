@@ -7,7 +7,7 @@
 // Camera struct
 struct Camera {
     // Position and direction vectors
-    glm::vec3 position;
+    glm::dvec3 truePosition;
     glm::vec3 up;
     glm::vec3 right;
     glm::vec3 front;

@@ -14,7 +14,7 @@ using std::array, std::string;
 using std::vector;
 
 // Using declarations for glm
-using glm::vec3;
+using glm::vec3, glm::dvec3;
 
 // Using declarations for entt
 using entt::entity, entt::registry;
@@ -112,7 +112,7 @@ MeshData mergePlanetFaceData(const std::vector<MeshData>& dataVect) {
 }
 
 // Ease of use entity creator for planets
-entity createPlanet(Mesh mesh, registry& reg, ResourceManager<GLuint>& textureManager, ResourceManager<GLuint>& shaderManager, const string& texturePath, const string& shaderKey, vec3 position) {
+entity createPlanet(Mesh mesh, registry& reg, ResourceManager<GLuint>& textureManager, ResourceManager<GLuint>& shaderManager, const string& texturePath, const string& shaderKey, dvec3 position) {
     entity planet = reg.create();
     reg.emplace<Model>(planet, mesh, textureManager.get(texturePath), shaderManager.get(shaderKey));
     reg.emplace<Transform>(planet, position);

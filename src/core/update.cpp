@@ -18,11 +18,11 @@ using entt::registry, entt::entity;
 
 // Using declarations for glm
 using glm::translate, glm::mat4, glm::value_ptr,
-      glm::vec3;
+      glm::vec3, glm::dvec3;
 
 // Render models onto the screen
-void renderModels(registry& reg, GLint modelLoc) {
-    reg.view<Model, Transform>().each([modelLoc](Model& model, Transform& transform) {
+void renderModels(registry& reg, GLint modelLoc, Camera& cam) {
+    reg.view<Model, Transform>().each([modelLoc, cam](Model& model, Transform& transform) {
         // Setup
         glUseProgram(model.shaderProg);
         glBindVertexArray(model.mesh.vao);
@@ -32,7 +32,8 @@ void renderModels(registry& reg, GLint modelLoc) {
         glBindTexture(GL_TEXTURE_2D, model.texture);
 
         // Capture modelLoc and use it to assemble to model matrix
-        mat4 modelMatrix = translate(mat4(1.0f), transform.position);
+        dvec3 offset = transform.truePosition - cam.truePosition;
+        mat4 modelMatrix = translate(mat4(1.0f), vec3(offset));
 
         // Draw the model
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(modelMatrix));
@@ -60,7 +61,7 @@ void gameLogic(Camera& cam, registry& reg, vector<PlanetInstance>& planets,
             }
         } else if (movementThresholdReached) {
             planet.pendingData = std::async(std::launch::async, generateLODPlanetMeshData, cam, 
-                                            distFactor, maxDepth, planetNoise, planet.noiseScale, planet.heightScale, leafRes);
+                                            distFactor, maxDepth, planetNoise, planet.noiseScale, planet.heightScale, leafRes, reg.get<Transform>(planet.entity).truePosition);
         }
     }
 }

@@ -13,7 +13,7 @@ struct Model {
 };
 
 struct Transform {
-    glm::vec3 position;
+    glm::dvec3 truePosition;
 };
 
 #endif
