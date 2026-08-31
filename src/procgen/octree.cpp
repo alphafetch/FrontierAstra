@@ -4,11 +4,24 @@
 
 #include "../core/constants.hpp"
 
+// Using declarations for std
+using std::vector;
+
 // Using declarations for glm
 using glm::dvec3;
 
 // Using declarations for entt
 using entt::registry, entt::entity;
+
+void OctreeNode::collectLeaves(vector<OctreeNode*>& outLeaves) {
+    if (this->children[0] == nullptr) {
+        outLeaves.push_back(this);
+    } else {
+        for (int i = 0; i < 8; i++) { 
+            children[i]->collectLeaves(outLeaves);
+        }
+    }
+}
 
 void OctreeNode::subdivideCheck(size_t maxObjects, size_t maxDepth, registry& reg) {
     if (this->objects.size() >= maxObjects \
