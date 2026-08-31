@@ -2,7 +2,6 @@
 
 #include "glm/glm.hpp"
 
-#include "../core/entity.hpp"
 #include "../core/constants.hpp"
 
 // Using declarations for glm
@@ -11,7 +10,7 @@ using glm::dvec3;
 // Using declarations for entt
 using entt::registry, entt::entity;
 
-void OctreeNode::subdivideCheck(int maxObjects, int maxDepth, registry& reg) {
+void OctreeNode::subdivideCheck(size_t maxObjects, size_t maxDepth, registry& reg) {
     if (this->objects.size() >= maxObjects \
         && depth < maxDepth) {
         subdivide();
@@ -43,9 +42,8 @@ void OctreeNode::subdivide() {
 }
 
 // Insert an entity registry into an OctreeNode
-void OctreeNode::insert(entt::registry& reg) {
-    reg.view<Transform>().each([this, &reg](entity& ent, Transform& t) {
-            dvec3 truePos = t.truePosition;
+void OctreeNode::insert(registry& reg) {
+    reg.view<Transform>().each([this, &reg](entity ent, Transform& t) {
             this->entityInsert(ent, t, reg);
         }
     );

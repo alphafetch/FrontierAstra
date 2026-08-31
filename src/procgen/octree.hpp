@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <entt/entt.hpp>
 
+#include "../core/entity.hpp"
+
 struct OctreeNode {
     glm::dvec3 lowBound;
     glm::dvec3 highBound;
@@ -20,7 +22,7 @@ struct OctreeNode {
         : lowBound(low), highBound(high), depth(depth) {}
 
     void collectLeaves(std::vector<OctreeNode*>& outLeaves);
-    void subdivideCheck(int maxObjects, int maxDepth, entt::registry& reg);
+    void subdivideCheck(size_t maxObjects, size_t maxDepth, entt::registry& reg);
     void subdivide();
     // Insert an entity registry into an OctreeNode
     void insert(entt::registry& reg);
